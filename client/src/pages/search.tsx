@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Grid, List, Search } from "lucide-react";
 import { useLocation, useSearch } from "wouter";
+import { useTranslation } from "react-i18next";
 
 type ViewType = "grid" | "list";
 
@@ -19,11 +20,12 @@ export default function SearchPage() {
   const search = useSearch();
   const urlParams = new URLSearchParams(search);
   const initialQuery = urlParams.get("q") || "";
+  const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [typeFilter, setTypeFilter] = useState("");
-  const [priceFilter, setPriceFilter] = useState("");
-  const [bedroomFilter, setBedroomFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [priceFilter, setPriceFilter] = useState("any");
+  const [bedroomFilter, setBedroomFilter] = useState("any");
   const [viewType, setViewType] = useState<ViewType>("grid");
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [contactListing, setContactListing] = useState<Listing | null>(null);
@@ -44,9 +46,9 @@ export default function SearchPage() {
   });
 
   const filteredListings = (searchQuery.trim() ? searchResults : allListings).filter(listing => {
-    if (typeFilter && listing.type !== typeFilter) return false;
+    if (typeFilter !== "all" && listing.type !== typeFilter) return false;
     
-    if (priceFilter) {
+    if (priceFilter !== "any") {
       const price = listing.price;
       switch (priceFilter) {
         case "under-500k":
@@ -61,7 +63,7 @@ export default function SearchPage() {
       }
     }
     
-    if (bedroomFilter) {
+    if (bedroomFilter !== "any") {
       const bedrooms = listing.bedrooms || 0;
       switch (bedroomFilter) {
         case "studio":
@@ -89,9 +91,9 @@ export default function SearchPage() {
     // Update URL with search parameters
     const params = new URLSearchParams();
     if (searchQuery.trim()) params.set("q", searchQuery.trim());
-    if (typeFilter) params.set("type", typeFilter);
-    if (priceFilter) params.set("price", priceFilter);
-    if (bedroomFilter) params.set("bedrooms", bedroomFilter);
+    if (typeFilter !== "all") params.set("type", typeFilter);
+    if (priceFilter !== "any") params.set("price", priceFilter);
+    if (bedroomFilter !== "any") params.set("bedrooms", bedroomFilter);
     
     const queryString = params.toString();
     navigate(`/search${queryString ? `?${queryString}` : ""}`);
@@ -99,20 +101,25 @@ export default function SearchPage() {
 
   const clearFilters = () => {
     setSearchQuery("");
-    setTypeFilter("");
-    setPriceFilter("");
-    setBedroomFilter("");
+    setTypeFilter("all");
+    setPriceFilter("any");
+    setBedroomFilter("any");
     navigate("/search");
   };
 
   // Load filters from URL on component mount
   useEffect(() => {
-    setTypeFilter(urlParams.get("type") || "");
-    setPriceFilter(urlParams.get("price") || "");
-    setBedroomFilter(urlParams.get("bedrooms") || "");
+    setTypeFilter(urlParams.get("type") || "all");
+    setPriceFilter(urlParams.get("price") || "any");
+    setBedroomFilter(urlParams.get("bedrooms") || "any");
   }, [search]);
 
-  const activeFilters = [typeFilter, priceFilter, bedroomFilter, searchQuery.trim()].filter(Boolean).length;
+  const activeFilters = [
+    typeFilter !== "all" ? typeFilter : null,
+    priceFilter !== "any" ? priceFilter : null,
+    bedroomFilter !== "any" ? bedroomFilter : null,
+    searchQuery.trim()
+  ].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -122,17 +129,17 @@ export default function SearchPage() {
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-slate-900 mb-4" data-testid="search-page-title">
-              Browse All Properties
+              {t("browseAllProperties", "Browse All Properties")}
             </h2>
             
             {/* Advanced Search Bar */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div>
-                  <Label className="block text-sm font-medium text-slate-700 mb-2">Search</Label>
+                  <Label className="block text-sm font-medium text-slate-700 mb-2">{t("search", "Search")}</Label>
                   <Input
                     type="text"
-                    placeholder="Title, location, description..."
+                    placeholder={t("searchPlaceholder", "Title, location, description...")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     data-testid="search-input"
@@ -140,47 +147,48 @@ export default function SearchPage() {
                 </div>
                 
                 <div>
-                  <Label className="block text-sm font-medium text-slate-700 mb-2">Type</Label>
+                  <Label className="block text-sm font-medium text-slate-700 mb-2">{t("type", "Type")}</Label>
                   <Select value={typeFilter} onValueChange={setTypeFilter}>
                     <SelectTrigger data-testid="type-filter">
-                      <SelectValue placeholder="All Types" />
+                      <SelectValue placeholder={t("allTypes", "All Types")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Types</SelectItem>
-                      <SelectItem value="For Sale">For Sale</SelectItem>
-                      <SelectItem value="For Rent">For Rent</SelectItem>
+                      <SelectItem value="all">{t("allTypes", "All Types")}</SelectItem>
+                      <SelectItem value="For Sale">{t("forSale", "For Sale")}</SelectItem>
+                      <SelectItem value="For Rent">{t("forRent", "For Rent")}</SelectItem>
+                      <SelectItem value="Land">{t("land", "Land")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 <div>
-                  <Label className="block text-sm font-medium text-slate-700 mb-2">Price Range</Label>
+                  <Label className="block text-sm font-medium text-slate-700 mb-2">{t("priceRange", "Price Range")}</Label>
                   <Select value={priceFilter} onValueChange={setPriceFilter}>
                     <SelectTrigger data-testid="price-filter">
-                      <SelectValue placeholder="Any Price" />
+                      <SelectValue placeholder={t("anyPrice", "Any Price")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any Price</SelectItem>
-                      <SelectItem value="under-500k">Under $500K</SelectItem>
-                      <SelectItem value="500k-1m">$500K - $1M</SelectItem>
-                      <SelectItem value="above-1m">Above $1M</SelectItem>
+                      <SelectItem value="any">{t("anyPrice", "Any Price")}</SelectItem>
+                      <SelectItem value="under-500k">{t("under500k", "Under $500K")}</SelectItem>
+                      <SelectItem value="500k-1m">{t("500kTo1m", "$500K - $1M")}</SelectItem>
+                      <SelectItem value="above-1m">{t("above1m", "Above $1M")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 <div>
-                  <Label className="block text-sm font-medium text-slate-700 mb-2">Bedrooms</Label>
+                  <Label className="block text-sm font-medium text-slate-700 mb-2">{t("bedrooms", "Bedrooms")}</Label>
                   <Select value={bedroomFilter} onValueChange={setBedroomFilter}>
                     <SelectTrigger data-testid="bedroom-filter">
-                      <SelectValue placeholder="Any" />
+                      <SelectValue placeholder={t("any", "Any")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any</SelectItem>
-                      <SelectItem value="studio">Studio</SelectItem>
-                      <SelectItem value="1+">1+</SelectItem>
-                      <SelectItem value="2+">2+</SelectItem>
-                      <SelectItem value="3+">3+</SelectItem>
-                      <SelectItem value="4+">4+</SelectItem>
+                      <SelectItem value="any">{t("any", "Any")}</SelectItem>
+                      <SelectItem value="studio">{t("studio", "Studio")}</SelectItem>
+                      <SelectItem value="1+">{t("onePlus", "1+")}</SelectItem>
+                      <SelectItem value="2+">{t("twoPlus", "2+")}</SelectItem>
+                      <SelectItem value="3+">{t("threePlus", "3+")}</SelectItem>
+                      <SelectItem value="4+">{t("fourPlus", "4+")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -190,7 +198,7 @@ export default function SearchPage() {
                 <div className="text-sm text-slate-600">
                   {activeFilters > 0 && (
                     <span data-testid="active-filters-count">
-                      {activeFilters} filter{activeFilters > 1 ? "s" : ""} applied
+                      {t("filtersApplied", { count: activeFilters })}
                     </span>
                   )}
                 </div>
@@ -201,7 +209,7 @@ export default function SearchPage() {
                       onClick={clearFilters}
                       data-testid="clear-filters-button"
                     >
-                      Clear Filters
+                      {t("clearFilters", "Clear Filters")}
                     </Button>
                   )}
                   <Button
@@ -210,7 +218,7 @@ export default function SearchPage() {
                     data-testid="apply-filters-button"
                   >
                     <Search className="w-4 h-4 mr-2" />
-                    Apply Filters
+                    {t("applyFilters", "Apply Filters")}
                   </Button>
                 </div>
               </div>
@@ -219,7 +227,7 @@ export default function SearchPage() {
             {/* View Toggle and Results Count */}
             <div className="flex justify-between items-center mb-8">
               <div className="text-slate-600" data-testid="results-count">
-                <span>{filteredListings.length}</span> properties found
+                <span>{filteredListings.length}</span> {t("propertiesFound", "properties found")}
               </div>
               <div className="flex bg-slate-100 rounded-lg p-1">
                 <Button
@@ -230,7 +238,7 @@ export default function SearchPage() {
                   data-testid="grid-view-button"
                 >
                   <Grid className="w-4 h-4 mr-2" />
-                  Grid
+                  {t("grid", "Grid")}
                 </Button>
                 <Button
                   variant={viewType === "list" ? "default" : "ghost"}
@@ -240,7 +248,7 @@ export default function SearchPage() {
                   data-testid="list-view-button"
                 >
                   <List className="w-4 h-4 mr-2" />
-                  List
+                  {t("list", "List")}
                 </Button>
               </div>
             </div>
@@ -262,8 +270,8 @@ export default function SearchPage() {
             ) : filteredListings.length === 0 ? (
               <div className="text-center py-12" data-testid="no-results-message">
                 <Search className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                <p className="text-slate-600 text-lg mb-2">No properties found</p>
-                <p className="text-slate-500">Try adjusting your search criteria or clearing filters</p>
+                <p className="text-slate-600 text-lg mb-2">{t("noPropertiesFound", "No properties found")}</p>
+                <p className="text-slate-500">{t("tryAdjustingSearch", "Try adjusting your search criteria or clearing filters")}</p>
               </div>
             ) : (
               <div className={`grid gap-6 ${

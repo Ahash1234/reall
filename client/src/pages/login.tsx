@@ -11,6 +11,7 @@ import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -22,6 +23,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function Login() {
   const [, navigate] = useLocation();
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -41,7 +43,7 @@ export default function Login() {
       navigate("/dashboard");
     },
     onError: (error: any) => {
-      setError("Invalid credentials. Please try again.");
+      setError(t("invalidCredentials", "Invalid credentials. Please try again."));
     },
   });
 
@@ -59,21 +61,21 @@ export default function Login() {
           <Card className="bg-white shadow-lg" data-testid="login-card">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl font-bold text-slate-900" data-testid="login-title">
-                Admin Login
+                {t("adminLogin", "Admin Login")}
               </CardTitle>
               <CardDescription data-testid="login-description">
-                Access the admin dashboard to manage listings
+                {t("adminDashboardAccess", "Access the admin dashboard to manage listings")}
               </CardDescription>
             </CardHeader>
             
             <CardContent>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username">{t("username", "Username")}</Label>
                   <Input
                     id="username"
                     {...form.register("username")}
-                    placeholder="admin"
+                    placeholder={t("usernamePlaceholder", "admin")}
                     data-testid="username-input"
                   />
                   {form.formState.errors.username && (
@@ -84,12 +86,12 @@ export default function Login() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t("password", "Password")}</Label>
                   <Input
                     id="password"
                     type="password"
                     {...form.register("password")}
-                    placeholder="password"
+                    placeholder={t("passwordPlaceholder", "password")}
                     data-testid="password-input"
                   />
                   {form.formState.errors.password && (
@@ -111,12 +113,14 @@ export default function Login() {
                   disabled={loginMutation.isPending}
                   data-testid="login-submit-button"
                 >
-                  {loginMutation.isPending ? "Signing In..." : "Sign In"}
+                  {loginMutation.isPending ? t("signingIn", "Signing In...") : t("signIn", "Sign In")}
                 </Button>
               </form>
               
               <div className="mt-6 text-center text-sm text-slate-500" data-testid="demo-credentials">
-                <p>Demo credentials: admin / password</p>
+              </div>
+              
+              <div className="mt-4 text-center">
               </div>
             </CardContent>
           </Card>

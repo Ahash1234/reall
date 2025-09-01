@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropertyHub - Premium Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-primary-600">PropertyHub</h1>
+                    </div>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" onclick="showSection('home')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-100">Home</a>
+                        <a href="#" onclick="showSection('search')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-100">Browse</a>
+                        <a href="#" onclick="showSection('login')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-100">Admin Login</a>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button class="mobile-menu-button p-2 rounded-md text-slate-600 hover:text-primary-600 hover:bg-slate-100">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div class="mobile-menu hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-slate-200">
+                <a href="#" onclick="showSection('home')" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-100">Home</a>
+                <a href="#" onclick="showSection('search')" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-100">Browse</a>
+                <a href="#" onclick="showSection('login')" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-100">Admin Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="min-h-screen">
+        <!-- @COMPONENT: HomePage -->
+        <!-- Home/Landing Section -->
+        <section id="home-section" class="section-content">
+            <!-- Hero Section -->
+            <div class="relative bg-gradient-to-r from-primary-600 to-primary-700 py-24 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center">
+                        <h2 class="text-4xl md:text-6xl font-bold text-white mb-6">Find Your Perfect Property</h2>
+                        <p class="text-xl text-blue-100 mb-12 max-w-3xl mx-auto">Discover premium listings from trusted sellers in your area. Whether you're buying, selling, or just browsing, we've got you covered.</p>
+                        
+                        <!-- Search Bar -->
+                        <div class="max-w-4xl mx-auto">
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex flex-col md:flex-row gap-4">
+                                    <div class="flex-1">
+                                        <input type="text" id="hero-search" placeholder="Search by title, location, or description..." class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                    </div>
+                                    <button onclick="performSearch()" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center">
+                                        <i class="fas fa-search mr-2"></i>
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Listings Section -->
+            <div class="py-16 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h3 class="text-3xl font-bold text-slate-900 mb-4">Featured Listings</h3>
+                        <p class="text-xl text-slate-600">Discover our handpicked selection of premium properties</p>
+                    </div>
+                    
+                    <!-- View Toggle -->
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="text-slate-600">
+                            <span id="listing-count">8</span> properties found
+                        </div>
+                        <div class="flex bg-slate-100 rounded-lg p-1">
+                            <button onclick="setView('grid')" class="view-toggle grid-view px-4 py-2 rounded-md text-sm font-medium bg-white text-slate-700 shadow-sm">
+                                <i class="fas fa-th-large mr-2"></i>Grid
+                            </button>
+                            <button onclick="setView('list')" class="view-toggle list-view px-4 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700">
+                                <i class="fas fa-list mr-2"></i>List
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Listings Grid -->
+                    <div id="listings-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <!-- Listing Card 1 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(1)">
+                            <!-- Modern luxury apartment with city skyline view -->
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Modern luxury apartment with city view" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-primary-100 text-primary-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Sale</span>
+                                    <span class="text-2xl font-bold text-slate-900">$850,000</span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Modern Downtown Loft</h4>
+                                <p class="text-slate-600 text-sm mb-3">Stunning 2-bedroom loft with floor-to-ceiling windows and premium finishes in the heart of downtown.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Downtown District
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> 2 bed</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 2 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 1,200 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Card 2 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(2)">
+                            <!-- Charming suburban family home with front yard -->
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Suburban family home with landscaped yard" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Sale</span>
+                                    <span class="text-2xl font-bold text-slate-900">$650,000</span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Charming Family Home</h4>
+                                <p class="text-slate-600 text-sm mb-3">Beautiful 4-bedroom home with landscaped garden, perfect for families seeking comfort and space.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Westfield Suburbs
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> 4 bed</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 3 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 2,400 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Card 3 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(3)">
+                            <!-- Contemporary beachfront condo with ocean view -->
+                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Oceanfront condo with modern interior" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Rent</span>
+                                    <span class="text-2xl font-bold text-slate-900">$4,200<span class="text-sm font-normal">/mo</span></span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Oceanfront Condo</h4>
+                                <p class="text-slate-600 text-sm mb-3">Luxurious beachfront condo with panoramic ocean views and resort-style amenities.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Coastal Heights
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> 3 bed</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 2 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 1,800 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Card 4 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(4)">
+                            <!-- Cozy studio apartment in trendy neighborhood -->
+                            <img src="https://pixabay.com/get/g490818e07aca3443b3dd6d6f9ae3f2f625b1ef663c95f5358c169c0f5af850afd01c0bc7bb1306d8be3141c2a2f383ba0a3ad55a8961a2b9e58cf8dbe10328e7_1280.jpg" alt="Modern studio apartment with minimalist design" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Rent</span>
+                                    <span class="text-2xl font-bold text-slate-900">$2,100<span class="text-sm font-normal">/mo</span></span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Trendy Studio Loft</h4>
+                                <p class="text-slate-600 text-sm mb-3">Stylish studio apartment in the arts district with exposed brick and modern amenities.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Arts Quarter
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> Studio</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 1 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 650 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Card 5 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(5)">
+                            <!-- Spacious penthouse with city panorama -->
+                            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Luxury penthouse with panoramic city view" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Sale</span>
+                                    <span class="text-2xl font-bold text-slate-900">$1.2M</span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Executive Penthouse</h4>
+                                <p class="text-slate-600 text-sm mb-3">Prestigious penthouse suite with private terrace and unmatched city views.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Financial District
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> 3 bed</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 3 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 2,800 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Card 6 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(6)">
+                            <!-- Rustic farmhouse in countryside setting -->
+                            <img src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Rustic farmhouse with wrap-around porch" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Sale</span>
+                                    <span class="text-2xl font-bold text-slate-900">$480,000</span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Country Farmhouse</h4>
+                                <p class="text-slate-600 text-sm mb-3">Authentic farmhouse on 3 acres with wrap-around porch and mountain views.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Countryside Valley
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> 5 bed</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 3 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 3,200 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Card 7 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(7)">
+                            <!-- Modern townhouse with contemporary design -->
+                            <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Contemporary townhouse with modern facade" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Rent</span>
+                                    <span class="text-2xl font-bold text-slate-900">$3,500<span class="text-sm font-normal">/mo</span></span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Modern Townhouse</h4>
+                                <p class="text-slate-600 text-sm mb-3">Contemporary 3-story townhouse with garage and private backyard in desirable neighborhood.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Midtown Commons
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> 3 bed</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 2.5 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 1,900 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Card 8 -->
+                        <div class="listing-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" onclick="showListingDetails(8)">
+                            <!-- Cozy cottage with garden setting -->
+                            <img src="https://images.unsplash.com/photo-1448630360428-65456885c650?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Charming cottage with flowering garden" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="bg-pink-100 text-pink-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">For Sale</span>
+                                    <span class="text-2xl font-bold text-slate-900">$390,000</span>
+                                </div>
+                                <h4 class="text-lg font-semibold text-slate-900 mb-2">Garden Cottage</h4>
+                                <p class="text-slate-600 text-sm mb-3">Charming cottage surrounded by mature gardens, perfect for those seeking tranquility.</p>
+                                <div class="flex items-center text-slate-500 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Rose Hill District
+                                </div>
+                                <div class="flex items-center mt-3 text-slate-500 text-sm space-x-4">
+                                    <span><i class="fas fa-bed mr-1"></i> 2 bed</span>
+                                    <span><i class="fas fa-bath mr-1"></i> 2 bath</span>
+                                    <span><i class="fas fa-ruler-combined mr-1"></i> 1,100 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: HomePage -->
+
+        <!-- @COMPONENT: SearchPage -->
+        <!-- Search/Browse Section -->
+        <section id="search-section" class="section-content hidden">
+            <div class="py-8 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">Browse All Properties</h2>
+                        
+                        <!-- Advanced Search Bar -->
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Search</label>
+                                    <input type="text" id="search-input" placeholder="Title, location, description..." class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Type</label>
+                                    <select class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                        <option>All Types</option>
+                                        <option>For Sale</option>
+                                        <option>For Rent</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Price Range</label>
+                                    <select class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                        <option>Any Price</option>
+                                        <option>Under $500K</option>
+                                        <option>$500K - $1M</option>
+                                        <option>Above $1M</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Bedrooms</label>
+                                    <select class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                        <option>Any</option>
+                                        <option>Studio</option>
+                                        <option>1+</option>
+                                        <option>2+</option>
+                                        <option>3+</option>
+                                        <option>4+</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex justify-end">
+                                <button onclick="filterListings()" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                    Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Same listings grid as home page would be displayed here -->
+                        <div id="search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <!-- Search results would be populated here via JavaScript -->
+                            <div class="text-center py-12 col-span-full">
+                                <i class="fas fa-search text-4xl text-slate-400 mb-4"></i>
+                                <p class="text-slate-600">Use the filters above to search for properties</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: SearchPage -->
+
+        <!-- @COMPONENT: LoginPage -->
+        <!-- Admin Login Section -->
+        <section id="login-section" class="section-content hidden">
+            <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-100">
+                <div class="max-w-md w-full space-y-8">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <div class="text-center">
+                            <h2 class="text-3xl font-bold text-slate-900 mb-2">Admin Login</h2>
+                            <p class="text-slate-600 mb-8">Access the admin dashboard to manage listings</p>
+                        </div>
+                        
+                        <form onsubmit="handleLogin(event)" class="space-y-6">
+                            <div>
+                                <label for="username" class="block text-sm font-medium text-slate-700 mb-2">Username</label>
+                                <input type="text" id="username" name="username" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="admin">
+                            </div>
+                            
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                                <input type="password" id="password" name="password" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="password">
+                            </div>
+                            
+                            <div id="login-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                                Invalid credentials. Please try again.
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-200">
+                                Sign In
+                            </button>
+                        </form>
+                        
+                        <div class="mt-6 text-center text-sm text-slate-500">
+                            <p>Demo credentials: admin / password</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: LoginPage -->
+
+        <!-- @COMPONENT: AdminDashboard -->
+        <!-- Admin Dashboard Section -->
+        <section id="dashboard-section" class="section-content hidden">
+            <div class="py-8 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Dashboard Header -->
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900">Admin Dashboard</h2>
+                            <p class="text-slate-600 mt-2">Manage your property listings</p>
+                        </div>
+                        <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            Logout
+                        </button>
+                    </div>
+                    
+                    <!-- Dashboard Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                            <div class="flex items-center">
+                                <div class="p-2 bg-primary-100 rounded-lg">
+                                    <i class="fas fa-home text-primary-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-slate-600">Total Listings</p>
+                                    <p class="text-2xl font-semibold text-slate-900">8</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                            <div class="flex items-center">
+                                <div class="p-2 bg-emerald-100 rounded-lg">
+                                    <i class="fas fa-dollar-sign text-emerald-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-slate-600">For Sale</p>
+                                    <p class="text-2xl font-semibold text-slate-900">5</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                            <div class="flex items-center">
+                                <div class="p-2 bg-blue-100 rounded-lg">
+                                    <i class="fas fa-key text-blue-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-slate-600">For Rent</p>
+                                    <p class="text-2xl font-semibold text-slate-900">3</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                            <div class="flex items-center">
+                                <div class="p-2 bg-yellow-100 rounded-lg">
+                                    <i class="fas fa-chart-line text-yellow-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-slate-600">Avg. Price</p>
+                                    <p class="text-2xl font-semibold text-slate-900">$680K</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dashboard Actions -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold text-slate-900">Manage Listings</h3>
+                        <button onclick="showAddListingForm()" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                            <i class="fas fa-plus mr-2"></i>
+                            Add New Listing
+                        </button>
+                    </div>
+                    
+                    <!-- Listings Table -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-200">
+                            <h4 class="text-lg font-semibold text-slate-900">Current Listings</h4>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Property</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Price</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Location</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <!-- Modern luxury apartment with city skyline view -->
+                                                <img class="h-12 w-12 rounded-lg object-cover" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Modern Downtown Loft">
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-slate-900">Modern Downtown Loft</div>
+                                                    <div class="text-sm text-slate-500">2 bed, 2 bath</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800">For Sale</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">$850,000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Downtown District</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button onclick="editListing(1)" class="text-primary-600 hover:text-primary-900 mr-3">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <button onclick="deleteListing(1)" class="text-red-600 hover:text-red-900">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Additional rows would be populated via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: AdminDashboard -->
+
+        <!-- @COMPONENT: AddListingModal -->
+        <!-- Add/Edit Listing Modal -->
+        <div id="listing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-screen overflow-y-auto">
+                <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center sticky top-0 bg-white">
+                    <h3 id="modal-title" class="text-xl font-semibold text-slate-900">Add New Listing</h3>
+                    <button onclick="closeListingModal()" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form onsubmit="handleListingSubmit(event)" class="p-6 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Title *</label>
+                            <input type="text" id="listing-title" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Property title">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Type *</label>
+                            <select id="listing-type" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                <option value="">Select type</option>
+                                <option value="For Sale">For Sale</option>
+                                <option value="For Rent">For Rent</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Price *</label>
+                            <input type="number" id="listing-price" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="0">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Location *</label>
+                            <input type="text" id="listing-location" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Property location">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Bedrooms</label>
+                            <input type="number" id="listing-bedrooms" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="0" min="0">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Bathrooms</label>
+                            <input type="number" id="listing-bathrooms" step="0.5" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="0" min="0">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Square Feet</label>
+                            <input type="number" id="listing-sqft" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="0" min="0">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Description *</label>
+                        <textarea id="listing-description" required rows="4" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-none" placeholder="Detailed property description"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Images</label>
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors">
+                            <input type="file" id="listing-images" multiple accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            <button type="button" onclick="document.getElementById('listing-images').click()" class="inline-flex items-center px-4 py-2 bg-primary-100 text-primary-700 rounded-lg hover:bg-primary-200 transition-colors">
+                                <i class="fas fa-upload mr-2"></i>
+                                Choose Images
+                            </button>
+                            <p class="text-slate-500 text-sm mt-2">Upload multiple images (JPG, PNG)</p>
+                            <div id="image-preview" class="mt-4 grid grid-cols-4 gap-4 hidden">
+                                <!-- Image previews will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4 pt-6 border-t border-slate-200">
+                        <button type="button" onclick="closeListingModal()" class="px-6 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Cancel</button>
+                        <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold transition-colors">Save Listing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: AddListingModal -->
+
+        <!-- @COMPONENT: ListingDetailsModal -->
+        <!-- Listing Details Modal -->
+        <div id="details-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-screen overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center sticky top-0 bg-white">
+                    <h3 id="details-title" class="text-xl font-semibold text-slate-900">Property Details</h3>
+                    <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+                    <!-- Image Gallery -->
+                    <div>
+                        <div class="relative mb-4">
+                            <img id="main-image" src="" alt="" class="w-full h-80 object-cover rounded-xl shadow-lg">
+                        </div>
+                        <div id="image-thumbnails" class="grid grid-cols-4 gap-2">
+                            <!-- Thumbnail images will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Property Details -->
+                    <div class="space-y-6">
+                        <div>
+                            <span id="details-type" class="inline-block bg-primary-100 text-primary-800 text-sm font-semibold px-3 py-1 rounded-full mb-3"></span>
+                            <h2 id="details-name" class="text-3xl font-bold text-slate-900 mb-2"></h2>
+                            <div class="flex items-center text-slate-600 mb-4">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span id="details-location"></span>
+                            </div>
+                            <div class="text-3xl font-bold text-primary-600 mb-6" id="details-price"></div>
+                        </div>
+                        
+                        <!-- Property Features -->
+                        <div class="grid grid-cols-3 gap-4 py-4 border-t border-b border-slate-200">
+                            <div class="text-center">
+                                <i class="fas fa-bed text-2xl text-slate-400 mb-2"></i>
+                                <div class="text-lg font-semibold text-slate-900" id="details-beds"></div>
+                                <div class="text-sm text-slate-500">Bedrooms</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-bath text-2xl text-slate-400 mb-2"></i>
+                                <div class="text-lg font-semibold text-slate-900" id="details-baths"></div>
+                                <div class="text-sm text-slate-500">Bathrooms</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-ruler-combined text-2xl text-slate-400 mb-2"></i>
+                                <div class="text-lg font-semibold text-slate-900" id="details-sqft"></div>
+                                <div class="text-sm text-slate-500">Sq Ft</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">Description</h3>
+                            <p id="details-description" class="text-slate-600 leading-relaxed"></p>
+                        </div>
+                        
+                        <!-- Map Placeholder -->
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">Location</h3>
+                            <div class="h-48 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200">
+                                <div class="text-center text-slate-500">
+                                    <i class="fas fa-map text-3xl mb-2"></i>
+                                    <p>Interactive map would be displayed here</p>
+                                    <p class="text-sm">(Google Maps integration)</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Button -->
+                        <button onclick="showContactForm()" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-4 rounded-xl font-semibold text-lg transition-colors duration-200">
+                            <i class="fas fa-envelope mr-2"></i>
+                            Contact About This Property
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: ListingDetailsModal -->
+
+        <!-- Contact Form Modal -->
+        <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+                <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-slate-900">Contact Seller</h3>
+                    <button onclick="closeContactModal()" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form onsubmit="handleContactSubmit(event)" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Your Name *</label>
+                        <input type="text" id="contact-name" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Email *</label>
+                        <input type="email" id="contact-email" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Phone</label>
+                        <input type="tel" id="contact-phone" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Message *</label>
+                        <textarea id="contact-message" required rows="4" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-none" placeholder="I'm interested in this property..."></textarea>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4 pt-4">
+                        <button type="button" onclick="closeContactModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold transition-colors">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Application state
+        let currentUser = null;
+        let currentView = 'grid';
+        
+        // Sample listings data
+        const listingsData = [
+            {
+                id: 1,
+                title: "Modern Downtown Loft",
+                type: "For Sale",
+                price: 850000,
+                location: "Downtown District",
+                bedrooms: 2,
+                bathrooms: 2,
+                sqft: 1200,
+                description: "Stunning 2-bedroom loft with floor-to-ceiling windows and premium finishes in the heart of downtown.",
+                images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"]
+            },
+            {
+                id: 2,
+                title: "Charming Family Home",
+                type: "For Sale", 
+                price: 650000,
+                location: "Westfield Suburbs",
+                bedrooms: 4,
+                bathrooms: 3,
+                sqft: 2400,
+                description: "Beautiful 4-bedroom home with landscaped garden, perfect for families seeking comfort and space.",
+                images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"]
+            }
+        ];
+        
+        // Navigation functions
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            // Update navigation active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-primary-600', 'bg-primary-50');
+            });
+        }
+        
+        // Search and filter functions
+        function performSearch() {
+            const searchTerm = document.getElementById('hero-search').value;
+            showSection('search');
+            // TODO: Implement search functionality
+            console.log('Searching for:', searchTerm);
+        }
+        
+        function filterListings() {
+            // TODO: Implement filtering logic based on form values
+            console.log('Filtering listings...');
+        }
+        
+        // View toggle functions
+        function setView(viewType) {
+            currentView = viewType;
+            
+            // Update toggle buttons
+            document.querySelectorAll('.view-toggle').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-slate-700', 'shadow-sm');
+                btn.classList.add('text-slate-500');
+            });
+            
+            const activeBtn = document.querySelector(`.${viewType}-view`);
+            activeBtn.classList.add('bg-white', 'text-slate-700', 'shadow-sm');
+            activeBtn.classList.remove('text-slate-500');
+            
+            // TODO: Update listings display based on view type
+        }
+        
+        // Listing details functions
+        function showListingDetails(listingId) {
+            // TODO: Populate modal with listing details
+            const listing = listingsData.find(l => l.id === listingId);
+            if (listing) {
+                document.getElementById('details-title').textContent = listing.title;
+                document.getElementById('details-name').textContent = listing.title;
+                document.getElementById('details-type').textContent = listing.type;
+                document.getElementById('details-location').textContent = listing.location;
+                document.getElementById('details-price').textContent = `$${listing.price.toLocaleString()}`;
+                document.getElementById('details-beds').textContent = listing.bedrooms || 'N/A';
+                document.getElementById('details-baths').textContent = listing.bathrooms || 'N/A';
+                document.getElementById('details-sqft').textContent = listing.sqft ? `${listing.sqft.toLocaleString()}` : 'N/A';
+                document.getElementById('details-description').textContent = listing.description;
+                document.getElementById('main-image').src = listing.images[0];
+                document.getElementById('main-image').alt = listing.title;
+            }
+            
+            document.getElementById('details-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDetailsModal() {
+            document.getElementById('details-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Contact form functions
+        function showContactForm() {
+            document.getElementById('contact-modal').classList.remove('hidden');
+        }
+        
+        function closeContactModal() {
+            document.getElementById('contact-modal').classList.add('hidden');
+        }
+        
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            // TODO: Handle contact form submission
+            alert('Message sent successfully! The seller will contact you soon.');
+            closeContactModal();
+        }
+        
+        // Authentication functions
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple hardcoded authentication
+            if (username === 'admin' && password === 'password') {
+                currentUser = { username: 'admin' };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showSection('dashboard');
+                document.getElementById('login-error').classList.add('hidden');
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+        
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showSection('home');
+            // Clear form
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        // Admin dashboard functions
+        function showAddListingForm() {
+            document.getElementById('modal-title').textContent = 'Add New Listing';
+            document.getElementById('listing-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function editListing(listingId) {
+            // TODO: Populate form with existing listing data
+            document.getElementById('modal-title').textContent = 'Edit Listing';
+            document.getElementById('listing-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function deleteListing(listingId) {
+            if (confirm('Are you sure you want to delete this listing?')) {
+                // TODO: Implement delete functionality
+                console.log('Deleting listing:', listingId);
+            }
+        }
+        
+        function closeListingModal() {
+            document.getElementById('listing-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function handleListingSubmit(event) {
+            event.preventDefault();
+            // TODO: Handle listing creation/update
+            alert('Listing saved successfully!');
+            closeListingModal();
+        }
+        
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('image-preview');
+            
+            if (files.length > 0) {
+                preview.classList.remove('hidden');
+                preview.innerHTML = '';
+                
+                // TODO: Handle file uploads and create previews
+                Array.from(files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'h-20 w-20 object-cover rounded-lg border border-slate-200';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+        
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Check for existing session
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+            }
+            
+            // Initialize with home section
+            showSection('home');
+        });
+        
+        // Close modals on backdrop click
+        document.addEventListener('click', function(event) {
+            if (event.target.id === 'details-modal') {
+                closeDetailsModal();
+            }
+            if (event.target.id === 'contact-modal') {
+                closeContactModal();
+            }
+            if (event.target.id === 'listing-modal') {
+                closeListingModal();
+            }
+        });
+    </script>
+</body>
+</html>

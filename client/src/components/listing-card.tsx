@@ -1,7 +1,9 @@
 import { type Listing } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { MapPin, Bed, Bath, Square } from "lucide-react";
+import { useState } from "react";
 
 interface ListingCardProps {
   listing: Listing;
@@ -9,6 +11,8 @@ interface ListingCardProps {
 }
 
 export function ListingCard({ listing, onClick }: ListingCardProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = listing.images || [];
   const formatPrice = (price: number, type: string) => {
     const formatted = price.toLocaleString();
     return type === "For Rent" ? `$${formatted}/mo` : `$${formatted}`;
@@ -33,11 +37,46 @@ export function ListingCard({ listing, onClick }: ListingCardProps) {
     >
       <div className="relative">
         <img
-          src={listing.images[0] || "/placeholder-image.jpg"}
+          src={images[currentImageIndex] || "/placeholder-image.jpg"}
           alt={listing.title}
           className="w-full h-48 object-cover"
           data-testid={`listing-image-${listing.id}`}
         />
+        {images.length > 1 && (
+          <>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="absolute left-1 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-slate-800 rounded-full w-8 h-8 shadow-md"
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentImageIndex((prev) => 
+                  prev === 0 ? images.length - 1 : prev - 1
+                );
+              }}
+              data-testid={`prev-image-button-${listing.id}`}
+            >
+              ←
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-slate-800 rounded-full w-8 h-8 shadow-md"
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentImageIndex((prev) => 
+                  prev === images.length - 1 ? 0 : prev + 1
+                );
+              }}
+              data-testid={`next-image-button-${listing.id}`}
+            >
+              →
+            </Button>
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
+              {currentImageIndex + 1} / {images.length}
+            </div>
+          </>
+        )}
       </div>
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-2">
@@ -63,7 +102,7 @@ export function ListingCard({ listing, onClick }: ListingCardProps) {
         </div>
         
         <div className="flex items-center text-slate-500 text-sm space-x-4">
-          {listing.bedrooms !== null && listing.bedrooms !== undefined && (
+          {listing.type !== "Land" && listing.bedrooms !== null && listing.bedrooms !== undefined && (
             <span className="flex items-center">
               <Bed className="w-4 h-4 mr-1" />
               <span data-testid={`listing-bedrooms-${listing.id}`}>
@@ -71,7 +110,7 @@ export function ListingCard({ listing, onClick }: ListingCardProps) {
               </span>
             </span>
           )}
-          {listing.bathrooms !== null && listing.bathrooms !== undefined && (
+          {listing.type !== "Land" && listing.bathrooms !== null && listing.bathrooms !== undefined && (
             <span className="flex items-center">
               <Bath className="w-4 h-4 mr-1" />
               <span data-testid={`listing-bathrooms-${listing.id}`}>{listing.bathrooms} bath</span>

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PropertyMap } from "@/components/ui/map";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertListingSchema } from "@shared/schema";
@@ -11,8 +12,9 @@ import { type InsertListing, type Listing } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Upload } from "lucide-react";
-import { useState } from "react";
+import { Upload, MapPin, Loader2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { geocodeAddress } from "@/lib/geocoding";
 
 interface ListingFormModalProps {
   listing?: Listing;
@@ -24,6 +26,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedImages, setSelectedImages] = useState<string[]>(listing?.images || []);
+  const [isGeocoding, setIsGeocoding] = useState(false);
   
   const form = useForm<InsertListing>({
     resolver: zodResolver(insertListingSchema),
@@ -32,7 +35,9 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
       description: listing?.description || "",
       price: listing?.price || 0,
       location: listing?.location || "",
-      type: listing?.type || "",
+      latitude: listing?.latitude || "0",
+      longitude: listing?.longitude || "0",
+      type: (listing?.type as "For Sale" | "For Rent" | "Land") || "For Sale",
       bedrooms: listing?.bedrooms || 0,
       bathrooms: listing?.bathrooms || 0,
       sqft: listing?.sqft || 0,
@@ -40,7 +45,39 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
     },
   });
 
+  // Debug: log the form values and listing data
+  console.log('Listing data:', listing);
+  console.log('Form default values:', form.getValues());
+
   const isEditing = !!listing;
+
+  useEffect(() => {
+    console.log('Form map coordinates:', {
+      latitude: form.getValues("latitude"),
+      longitude: form.getValues("longitude"),
+      parsedLatitude: parseFloat(form.getValues("latitude") || "0"),
+      parsedLongitude: parseFloat(form.getValues("longitude") || "0")
+    });
+  }, [form.watch("latitude"), form.watch("longitude")]);
+
+  useEffect(() => {
+    if (listing) {
+      form.reset({
+        title: listing.title || "",
+        description: listing.description || "",
+        price: listing.price || 0,
+        location: listing.location || "",
+        latitude: listing.latitude || "0",
+        longitude: listing.longitude || "0",
+        type: (listing.type as "For Sale" | "For Rent" | "Land") || "For Sale",
+        bedrooms: listing.bedrooms || 0,
+        bathrooms: listing.bathrooms || 0,
+        sqft: listing.sqft || 0,
+        images: listing.images || [],
+      });
+      setSelectedImages(listing.images || []);
+    }
+  }, [listing]);
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertListing) => {
@@ -107,6 +144,45 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
     });
   };
 
+  const handleGeocode = async () => {
+    const location = form.getValues("location");
+    if (!location.trim()) {
+      toast({
+        title: "Location required",
+        description: "Please enter an address to geocode",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeocoding(true);
+    try {
+      const result = await geocodeAddress(location);
+      if (result) {
+        form.setValue("latitude", result.lat);
+        form.setValue("longitude", result.lon);
+        toast({
+          title: "Location found!",
+          description: "The address has been mapped successfully",
+        });
+      } else {
+        toast({
+          title: "Location not found",
+          description: "Could not find coordinates for this address",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Geocoding failed",
+        description: "Failed to geocode the address. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
+
   const removeImage = (index: number) => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
   };
@@ -114,6 +190,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
   const handleClose = () => {
     form.reset();
     setSelectedImages([]);
+    setIsGeocoding(false);
     onClose();
   };
 
@@ -154,6 +231,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
                     <SelectContent>
                       <SelectItem value="For Sale">For Sale</SelectItem>
                       <SelectItem value="For Rent">For Rent</SelectItem>
+                      <SelectItem value="Land">Land</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -179,41 +257,73 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
             
             <div>
               <Label htmlFor="location">Location *</Label>
-              <Input
-                id="location"
-                {...form.register("location")}
-                placeholder="Property location"
-                data-testid="listing-location-input"
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="location"
+                  {...form.register("location")}
+                  placeholder="Property address"
+                  data-testid="listing-location-input"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  onClick={handleGeocode}
+                  disabled={isGeocoding}
+                  className="whitespace-nowrap"
+                  data-testid="geocode-button"
+                >
+                  {isGeocoding ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <MapPin className="w-4 h-4" />
+                  )}
+                  {isGeocoding ? "Locating..." : "Find on Map"}
+                </Button>
+              </div>
               {form.formState.errors.location && (
                 <p className="text-sm text-red-600 mt-1">{form.formState.errors.location.message}</p>
               )}
+              <div className="mt-4 h-64">
+                <PropertyMap
+                  latitude={parseFloat(form.getValues("latitude") || "0")}
+                  longitude={parseFloat(form.getValues("longitude") || "0")}
+                  interactive={true}
+                  onLocationSelect={(lat: number, lng: number) => {
+                    form.setValue("latitude", lat.toString());
+                    form.setValue("longitude", lng.toString());
+                  }}
+                />
+              </div>
             </div>
             
-            <div>
-              <Label htmlFor="bedrooms">Bedrooms</Label>
-              <Input
-                id="bedrooms"
-                type="number"
-                {...form.register("bedrooms", { valueAsNumber: true })}
-                placeholder="0"
-                min="0"
-                data-testid="listing-bedrooms-input"
-              />
-            </div>
+            {form.watch("type") !== "Land" && (
+              <div>
+                <Label htmlFor="bedrooms">Bedrooms</Label>
+                <Input
+                  id="bedrooms"
+                  type="number"
+                  {...form.register("bedrooms", { valueAsNumber: true })}
+                  placeholder="0"
+                  min="0"
+                  data-testid="listing-bedrooms-input"
+                />
+              </div>
+            )}
             
-            <div>
-              <Label htmlFor="bathrooms">Bathrooms</Label>
-              <Input
-                id="bathrooms"
-                type="number"
-                step="0.5"
-                {...form.register("bathrooms", { valueAsNumber: true })}
-                placeholder="0"
-                min="0"
-                data-testid="listing-bathrooms-input"
-              />
-            </div>
+            {form.watch("type") !== "Land" && (
+              <div>
+                <Label htmlFor="bathrooms">Bathrooms</Label>
+                <Input
+                  id="bathrooms"
+                  type="number"
+                  step="0.5"
+                  {...form.register("bathrooms", { valueAsNumber: true })}
+                  placeholder="0"
+                  min="0"
+                  data-testid="listing-bathrooms-input"
+                />
+              </div>
+            )}
             
             <div>
               <Label htmlFor="sqft">Square Feet</Label>

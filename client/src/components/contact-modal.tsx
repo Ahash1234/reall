@@ -10,12 +10,13 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { type Listing } from "@shared/schema";
+import { useTranslation } from "react-i18next";
 
 const contactSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
+  name: z.string().min(1, "requiredField"),
+  email: z.string().email("invalidEmail"),
   phone: z.string().optional(),
-  message: z.string().min(1, "Message is required"),
+  message: z.string().min(1, "requiredField"),
 });
 
 type ContactForm = z.infer<typeof contactSchema>;
@@ -27,6 +28,7 @@ interface ContactModalProps {
 }
 
 export function ContactModal({ listing, isOpen, onClose }: ContactModalProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   
   const form = useForm<ContactForm>({
@@ -35,7 +37,7 @@ export function ContactModal({ listing, isOpen, onClose }: ContactModalProps) {
       name: "",
       email: "",
       phone: "",
-      message: listing ? `I'm interested in the property: ${listing.title}` : "",
+      message: listing ? `${t("message")}: ${listing.title}` : "",
     },
   });
 
@@ -48,16 +50,16 @@ export function ContactModal({ listing, isOpen, onClose }: ContactModalProps) {
     },
     onSuccess: () => {
       toast({
-        title: "Message sent successfully!",
-        description: "The seller will contact you soon.",
+        title: t("contactSent"),
+        description: t("sellerWillContact"),
       });
       form.reset();
       onClose();
     },
     onError: () => {
       toast({
-        title: "Failed to send message",
-        description: "Please try again later.",
+        title: t("contactError"),
+        description: t("tryAgainLater"),
         variant: "destructive",
       });
     },
@@ -78,65 +80,65 @@ export function ContactModal({ listing, isOpen, onClose }: ContactModalProps) {
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md" data-testid="contact-modal">
         <DialogHeader>
-          <DialogTitle data-testid="contact-modal-title">Contact Seller</DialogTitle>
+          <DialogTitle data-testid="contact-modal-title">{t("contactSeller")}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="name">Your Name *</Label>
+            <Label htmlFor="name">{t("name")} *</Label>
             <Input
               id="name"
               {...form.register("name")}
-              placeholder="Enter your name"
+              placeholder={t("name")}
               data-testid="contact-name-input"
             />
             {form.formState.errors.name && (
               <p className="text-sm text-red-600 mt-1" data-testid="contact-name-error">
-                {form.formState.errors.name.message}
+                {t(form.formState.errors.name.message as keyof typeof t)}
               </p>
             )}
           </div>
           
           <div>
-            <Label htmlFor="email">Email *</Label>
+            <Label htmlFor="email">{t("email")} *</Label>
             <Input
               id="email"
               type="email"
               {...form.register("email")}
-              placeholder="Enter your email"
+              placeholder={t("email")}
               data-testid="contact-email-input"
             />
             {form.formState.errors.email && (
               <p className="text-sm text-red-600 mt-1" data-testid="contact-email-error">
-                {form.formState.errors.email.message}
+                {t(form.formState.errors.email.message as keyof typeof t)}
               </p>
             )}
           </div>
           
           <div>
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{t("phone")}</Label>
             <Input
               id="phone"
               type="tel"
               {...form.register("phone")}
-              placeholder="Enter your phone number"
+              placeholder={t("phone")}
               data-testid="contact-phone-input"
             />
           </div>
           
           <div>
-            <Label htmlFor="message">Message *</Label>
+            <Label htmlFor="message">{t("message")} *</Label>
             <Textarea
               id="message"
               {...form.register("message")}
               rows={4}
-              placeholder="I'm interested in this property..."
+              placeholder={t("message")}
               className="resize-none"
               data-testid="contact-message-input"
             />
             {form.formState.errors.message && (
               <p className="text-sm text-red-600 mt-1" data-testid="contact-message-error">
-                {form.formState.errors.message.message}
+                {t(form.formState.errors.message.message as keyof typeof t)}
               </p>
             )}
           </div>
@@ -148,14 +150,14 @@ export function ContactModal({ listing, isOpen, onClose }: ContactModalProps) {
               onClick={handleClose}
               data-testid="contact-cancel-button"
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               type="submit"
               disabled={contactMutation.isPending}
               data-testid="contact-submit-button"
             >
-              {contactMutation.isPending ? "Sending..." : "Send Message"}
+              {contactMutation.isPending ? t("sending") : t("sendMessage")}
             </Button>
           </div>
         </form>

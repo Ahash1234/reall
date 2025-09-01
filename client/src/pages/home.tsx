@@ -7,8 +7,9 @@ import { ListingDetailsModal } from "@/components/listing-details-modal";
 import { ContactModal } from "@/components/contact-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Grid, List } from "lucide-react";
+import { Search, Grid, List, Languages } from "lucide-react";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 
 type ViewType = "grid" | "list";
 
@@ -18,6 +19,7 @@ export default function Home() {
   const [viewType, setViewType] = useState<ViewType>("grid");
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [contactListing, setContactListing] = useState<Listing | null>(null);
+  const { t, i18n } = useTranslation();
 
   const { data: listings = [], isLoading } = useQuery<Listing[]>({
     queryKey: ["/api/listings"],
@@ -37,6 +39,11 @@ export default function Home() {
     }
   };
 
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'ta' : 'en';
+    i18n.changeLanguage(newLang);
+  };
+
   const featuredListings = listings.slice(0, 8);
 
   return (
@@ -48,10 +55,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <h2 className="text-4xl md:text-6xl font-bold text-white mb-6" data-testid="hero-title">
-              Find Your Perfect Property
+              {t('welcome')}
             </h2>
             <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto" data-testid="hero-subtitle">
-              Discover premium listings from trusted sellers in your area. Whether you're buying, selling, or just browsing, we've got you covered.
+              {t('heroSubtitle', 'Discover premium listings from trusted sellers in your area. Whether you\'re buying, selling, or just browsing, we\'ve got you covered.')}
             </p>
             
             {/* Search Bar */}
@@ -61,7 +68,7 @@ export default function Home() {
                   <div className="flex-1">
                     <Input
                       type="text"
-                      placeholder="Search by title, location, or description..."
+                      placeholder={t('searchPlaceholder', 'Search by title, location, or description...')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onKeyPress={handleKeyPress}
@@ -75,7 +82,7 @@ export default function Home() {
                     data-testid="hero-search-button"
                   >
                     <Search className="w-4 h-4 mr-2" />
-                    Search
+                    {t('search')}
                   </Button>
                 </div>
               </div>
@@ -89,17 +96,17 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-slate-900 mb-4" data-testid="featured-title">
-              Featured Listings
+              {t('featuredListings')}
             </h3>
             <p className="text-xl text-slate-600" data-testid="featured-subtitle">
-              Discover our handpicked selection of premium properties
+              {t('featuredSubtitle', 'Discover our handpicked selection of premium properties')}
             </p>
           </div>
           
           {/* View Toggle */}
           <div className="flex justify-between items-center mb-8">
             <div className="text-slate-600" data-testid="listing-count">
-              <span>{featuredListings.length}</span> properties found
+              <span>{featuredListings.length}</span> {t('propertiesFound')}
             </div>
             <div className="flex bg-slate-100 rounded-lg p-1">
               <Button
@@ -110,7 +117,7 @@ export default function Home() {
                 data-testid="grid-view-button"
               >
                 <Grid className="w-4 h-4 mr-2" />
-                Grid
+                {t('grid')}
               </Button>
               <Button
                 variant={viewType === "list" ? "default" : "ghost"}
@@ -120,7 +127,7 @@ export default function Home() {
                 data-testid="list-view-button"
               >
                 <List className="w-4 h-4 mr-2" />
-                List
+                {t('list')}
               </Button>
             </div>
           </div>
@@ -141,7 +148,7 @@ export default function Home() {
             </div>
           ) : featuredListings.length === 0 ? (
             <div className="text-center py-12" data-testid="no-listings-message">
-              <p className="text-slate-600">No listings available at the moment.</p>
+              <p className="text-slate-600">{t('noListings')}</p>
             </div>
           ) : (
             <div className={`grid gap-6 ${

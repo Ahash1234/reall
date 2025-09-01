@@ -1,17 +1,24 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export function Navigation() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const navItems = [
-    { href: "/", label: "Home" },
-    { href: "/search", label: "Browse" },
-    { href: "/login", label: "Admin Login" },
+    { href: "/", label: t('home') },
+    { href: "/search", label: t('search') },
+    { href: "/login", label: t('login') },
   ];
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'ta' : 'en';
+    i18n.changeLanguage(newLang);
+  };
 
   const isActive = (href: string) => {
     if (href === "/" && location === "/") return true;
@@ -29,8 +36,8 @@ export function Navigation() {
             </Link>
           </div>
           
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
+            <div className="flex items-baseline space-x-4">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -46,6 +53,18 @@ export function Navigation() {
                 </Link>
               ))}
             </div>
+            
+            {/* Language Toggle Button */}
+            <Button
+              onClick={toggleLanguage}
+              variant="outline"
+              size="sm"
+              className="border-slate-300 text-slate-700 hover:bg-slate-100"
+              data-testid="language-toggle-button"
+            >
+              <Languages className="w-4 h-4 mr-2" />
+              {i18n.language === 'en' ? 'தமிழ்' : 'English'}
+            </Button>
           </div>
           
           {/* Mobile menu button */}
@@ -70,7 +89,7 @@ export function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                className={`block px-3极 py-2 rounded-md text-base font-medium transition-colors ${
                   isActive(item.href)
                     ? "text-primary-600 bg-primary-50"
                     : "text-slate-700 hover:text-primary-600 hover:bg-slate-100"

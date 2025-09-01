@@ -15,6 +15,8 @@ export const listings = pgTable("listings", {
   description: text("description").notNull(),
   price: integer("price").notNull(),
   location: text("location").notNull(),
+  latitude: text("latitude").notNull().default("0"),
+  longitude: text("longitude").notNull().default("0"),
   type: text("type").notNull(), // "For Sale" or "For Rent"
   bedrooms: integer("bedrooms"),
   bathrooms: integer("bathrooms"),
@@ -29,11 +31,15 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-export const insertListingSchema = createInsertSchema(listings).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertListingSchema = createInsertSchema(listings)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    type: z.enum(["For Sale", "For Rent", "Land"]),
+  });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
