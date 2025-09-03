@@ -18,9 +18,10 @@ export const listings = pgTable("listings", {
   latitude: text("latitude").notNull().default("0"),
   longitude: text("longitude").notNull().default("0"),
   type: text("type").notNull(), // "For Sale" or "For Rent"
-  bedrooms: integer("bedrooms"),
-  bathrooms: integer("bathrooms"),
-  sqft: integer("sqft"),
+  owners: integer("owners"),
+  wheels: integer("wheels"),
+  yearOfManufacture: integer("yearOfManufacture"),
+  contactNumber: text("contactNumber"),
   images: text("images").array().default([]),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -38,7 +39,7 @@ export const insertListingSchema = createInsertSchema(listings)
     updatedAt: true,
   })
   .extend({
-    type: z.enum(["For Sale", "For Rent", "Land"]),
+    type: z.enum(["For Sale", "For Rent"]),
   });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

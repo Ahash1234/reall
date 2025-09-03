@@ -2,7 +2,7 @@ import { type Listing } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Bed, Bath, Square } from "lucide-react";
+import { MapPin, Users, Settings, Calendar } from "lucide-react";
 import { useState } from "react";
 
 interface ListingCardProps {
@@ -102,24 +102,24 @@ export function ListingCard({ listing, onClick }: ListingCardProps) {
         </div>
         
         <div className="flex items-center text-slate-500 text-sm space-x-4">
-          {listing.type !== "Land" && listing.bedrooms !== null && listing.bedrooms !== undefined && (
+          {listing.owners !== null && listing.owners !== undefined && (
             <span className="flex items-center">
-              <Bed className="w-4 h-4 mr-1" />
-              <span data-testid={`listing-bedrooms-${listing.id}`}>
-                {listing.bedrooms === 0 ? "Studio" : `${listing.bedrooms} bed`}
+              <Users className="w-4 h-4 mr-1" />
+              <span data-testid={`listing-owners-${listing.id}`}>
+                {listing.owners === 0 ? "New" : `${listing.owners} owners`}
               </span>
             </span>
           )}
-          {listing.type !== "Land" && listing.bathrooms !== null && listing.bathrooms !== undefined && (
+          {listing.wheels !== null && listing.wheels !== undefined && (
             <span className="flex items-center">
-              <Bath className="w-4 h-4 mr-1" />
-              <span data-testid={`listing-bathrooms-${listing.id}`}>{listing.bathrooms} bath</span>
+              <Settings className="w-4 h-4 mr-1" />
+              <span data-testid={`listing-wheels-${listing.id}`}>{listing.wheels} wheels</span>
             </span>
           )}
-          {listing.sqft && (
+          {listing.yearOfManufacture && (
             <span className="flex items-center">
-              <Square className="w-4 h-4 mr-1" />
-              <span data-testid={`listing-sqft-${listing.id}`}>{listing.sqft.toLocaleString()} sqft</span>
+              <Calendar className="w-4 h-4 mr-1" />
+              <span data-testid={`listing-yearOfManufacture-${listing.id}`}>{listing.yearOfManufacture}</span>
             </span>
           )}
         </div>

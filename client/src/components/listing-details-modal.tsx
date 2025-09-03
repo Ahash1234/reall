@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PropertyMap } from "@/components/ui/map";
-import { MapPin, Bed, Bath, Square, Mail } from "lucide-react";
+import { MapPin, Users, Settings, Calendar, Mail, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -122,6 +122,29 @@ export function ListingDetailsModal({ listing, isOpen, onClose, onContact }: Lis
                 ))}
               </div>
             )}
+
+            {/* Contact Information */}
+            {listing.contactNumber && (
+              <div className="bg-slate-50 p-4 rounded-lg mt-4">
+                <h3 className="text-lg font-semibold text-slate-900 mb-2 flex items-center">
+                  <Phone className="w-5 h-5 mr-2" />
+                  Contact Information
+                </h3>
+                <p className="text-slate-700" data-testid="listing-details-contactNumber">
+                  {listing.contactNumber}
+                </p>
+              </div>
+            )}
+
+            {/* Contact Button */}
+            <Button
+              onClick={() => onContact(listing)}
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white py-4 text-lg mt-4"
+              data-testid="contact-button"
+            >
+              <Mail className="w-5 h-5 mr-2" />
+              {t("contactSeller")}
+            </Button>
           </div>
           
           {/* Property Details */}
@@ -142,43 +165,39 @@ export function ListingDetailsModal({ listing, isOpen, onClose, onContact }: Lis
               </div>
             </div>
             
-            {/* Property Features */}
-            <div className={`grid gap-4 py-4 border-t border-b border-slate-200 ${
-              listing.type === "Land" ? "grid-cols-1" : "grid-cols-3"
-            }`}>
-              {listing.type !== "Land" && (
-                <div className="text-center">
-                  <Bed className="w-6 h-6 text-slate-400 mb-2 mx-auto" />
-                  <div className="text-lg font-semibold text-slate-900" data-testid="listing-details-bedrooms">
-                    {listing.bedrooms === 0 ? t("studio") : listing.bedrooms || "N/A"}
-                  </div>
-                  <div className="text-sm text-slate-500">{t("bedrooms")}</div>
-                </div>
-              )}
-              {listing.type !== "Land" && (
-                <div className="text-center">
-                  <Bath className="w-6 h-6 text-slate-400 mb-2 mx-auto" />
-                  <div className="text-lg font-semibold text-slate-900" data-testid="listing-details-bathrooms">
-                    {listing.bathrooms || "N/A"}
-                  </div>
-                  <div className="text-sm text-slate-500">{t("bathrooms")}</div>
-                </div>
-              )}
+            {/* Vehicle Features */}
+            <div className="grid gap-4 py-4 border-t border-b border-slate-200 grid-cols-3">
               <div className="text-center">
-                <Square className="w-6 h-6 text-slate-400 mb-2 mx-auto" />
-                <div className="text-lg font-semibold text-slate-900" data-testid="listing-details-sqft">
-                  {listing.sqft ? listing.sqft.toLocaleString() : "N/A"}
+                <Users className="w-6 h-6 text-slate-400 mb-2 mx-auto" />
+                <div className="text-lg font-semibold text-slate-900" data-testid="listing-details-owners">
+                  {listing.owners === 0 ? "New" : listing.owners || "N/A"}
                 </div>
-                <div className="text-sm text-slate-500">{t("sqft")}</div>
+                <div className="text-sm text-slate-500">Owners</div>
+              </div>
+              <div className="text-center">
+                <Settings className="w-6 h-6 text-slate-400 mb-2 mx-auto" />
+                <div className="text-lg font-semibold text-slate-900" data-testid="listing-details-wheels">
+                  {listing.wheels || "N/A"}
+                </div>
+                <div className="text-sm text-slate-500">Wheels</div>
+              </div>
+              <div className="text-center">
+                <Calendar className="w-6 h-6 text-slate-400 mb-2 mx-auto" />
+                <div className="text-lg font-semibold text-slate-900" data-testid="listing-details-yearOfManufacture">
+                  {listing.yearOfManufacture || "N/A"}
+                </div>
+                <div className="text-sm text-slate-500">Year</div>
               </div>
             </div>
             
             {/* Description */}
             <div>
               <h3 className="text-xl font-semibold text-slate-900 mb-3">{t("description")}</h3>
-              <p className="text-slate-600 leading-relaxed" data-testid="listing-details-description">
-                {listing.description}
-              </p>
+              <div className="max-h-40 overflow-y-auto">
+                <p className="text-slate-600 leading-relaxed" data-testid="listing-details-description">
+                  {listing.description}
+                </p>
+              </div>
             </div>
             
             {/* Map */}
@@ -241,16 +260,6 @@ export function ListingDetailsModal({ listing, isOpen, onClose, onContact }: Lis
                 />
               </div>
             </div>
-            
-            {/* Contact Button */}
-            <Button
-              onClick={() => onContact(listing)}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white py-4 text-lg"
-              data-testid="contact-button"
-            >
-              <Mail className="w-5 h-5 mr-2" />
-              {t("contactSeller")}
-            </Button>
           </div>
         </div>
       </DialogContent>

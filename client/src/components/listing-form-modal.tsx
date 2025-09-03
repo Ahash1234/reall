@@ -37,10 +37,11 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
       location: listing?.location || "",
       latitude: listing?.latitude || "0",
       longitude: listing?.longitude || "0",
-      type: (listing?.type as "For Sale" | "For Rent" | "Land") || "For Sale",
-      bedrooms: listing?.bedrooms || 0,
-      bathrooms: listing?.bathrooms || 0,
-      sqft: listing?.sqft || 0,
+      type: (listing?.type as "For Sale" | "For Rent") || "For Sale",
+      owners: listing?.owners || 0,
+      wheels: listing?.wheels || 0,
+      yearOfManufacture: listing?.yearOfManufacture || 0,
+      contactNumber: listing?.contactNumber || "",
       images: listing?.images || [],
     },
   });
@@ -69,10 +70,11 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
         location: listing.location || "",
         latitude: listing.latitude || "0",
         longitude: listing.longitude || "0",
-        type: (listing.type as "For Sale" | "For Rent" | "Land") || "For Sale",
-        bedrooms: listing.bedrooms || 0,
-        bathrooms: listing.bathrooms || 0,
-        sqft: listing.sqft || 0,
+        type: (listing.type as "For Sale" | "For Rent") || "For Sale",
+        owners: listing.owners || 0,
+        wheels: listing.wheels || 0,
+        yearOfManufacture: listing.yearOfManufacture || 0,
+        contactNumber: listing.contactNumber || "",
         images: listing.images || [],
       });
       setSelectedImages(listing.images || []);
@@ -210,7 +212,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
               <Input
                 id="title"
                 {...form.register("title")}
-                placeholder="Property title"
+                placeholder="Heavy vehicle title"
                 data-testid="listing-title-input"
               />
               {form.formState.errors.title && (
@@ -231,7 +233,6 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
                     <SelectContent>
                       <SelectItem value="For Sale">For Sale</SelectItem>
                       <SelectItem value="For Rent">For Rent</SelectItem>
-                      <SelectItem value="Land">Land</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -261,7 +262,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
                 <Input
                   id="location"
                   {...form.register("location")}
-                  placeholder="Property address"
+                  placeholder="Vehicle location"
                   data-testid="listing-location-input"
                   className="flex-1"
                 />
@@ -296,55 +297,61 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
               </div>
             </div>
             
-            {form.watch("type") !== "Land" && (
-              <div>
-                <Label htmlFor="bedrooms">Bedrooms</Label>
-                <Input
-                  id="bedrooms"
-                  type="number"
-                  {...form.register("bedrooms", { valueAsNumber: true })}
-                  placeholder="0"
-                  min="0"
-                  data-testid="listing-bedrooms-input"
-                />
-              </div>
-            )}
-            
-            {form.watch("type") !== "Land" && (
-              <div>
-                <Label htmlFor="bathrooms">Bathrooms</Label>
-                <Input
-                  id="bathrooms"
-                  type="number"
-                  step="0.5"
-                  {...form.register("bathrooms", { valueAsNumber: true })}
-                  placeholder="0"
-                  min="0"
-                  data-testid="listing-bathrooms-input"
-                />
-              </div>
-            )}
-            
             <div>
-              <Label htmlFor="sqft">Square Feet</Label>
+              <Label htmlFor="owners">Owners</Label>
               <Input
-                id="sqft"
+                id="owners"
                 type="number"
-                {...form.register("sqft", { valueAsNumber: true })}
+                {...form.register("owners", { valueAsNumber: true })}
                 placeholder="0"
                 min="0"
-                data-testid="listing-sqft-input"
+                data-testid="listing-owners-input"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="wheels">Wheels</Label>
+              <Input
+                id="wheels"
+                type="number"
+                step="0.5"
+                {...form.register("wheels", { valueAsNumber: true })}
+                placeholder="0"
+                min="0"
+                data-testid="listing-wheels-input"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="yearOfManufacture">Year of Manufacture</Label>
+              <Input
+                id="yearOfManufacture"
+                type="number"
+                {...form.register("yearOfManufacture", { valueAsNumber: true })}
+                placeholder="0"
+                min="0"
+                data-testid="listing-yearOfManufacture-input"
+              />
+            </div>
+            <div>
+              <Label htmlFor="contactNumber">Contact Number</Label>
+              <Input
+                id="contactNumber"
+                type="text"
+                {...form.register("contactNumber")}
+                placeholder="Contact Number"
+                data-testid="listing-contactNumber-input"
               />
             </div>
           </div>
-          
+
           <div>
             <Label htmlFor="description">Description *</Label>
             <Textarea
               id="description"
               {...form.register("description")}
               rows={4}
-              placeholder="Detailed property description"
+              placeholder="Detailed vehicle description"
               className="resize-none"
               data-testid="listing-description-input"
             />
@@ -352,7 +359,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
               <p className="text-sm text-red-600 mt-1">{form.formState.errors.description.message}</p>
             )}
           </div>
-          
+
           <div>
             <Label>Images</Label>
             <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors">
@@ -375,7 +382,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
                 Choose Images
               </Button>
               <p className="text-slate-500 text-sm mt-2">Upload multiple images (JPG, PNG)</p>
-              
+
               {selectedImages.length > 0 && (
                 <div className="mt-4 grid grid-cols-4 gap-4" data-testid="image-preview-grid">
                   {selectedImages.map((image, index) => (
@@ -402,7 +409,7 @@ export function ListingFormModal({ listing, isOpen, onClose }: ListingFormModalP
               )}
             </div>
           </div>
-          
+
           <div className="flex justify-end space-x-4 pt-6 border-t border-slate-200">
             <Button
               type="button"

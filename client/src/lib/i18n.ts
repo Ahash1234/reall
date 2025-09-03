@@ -25,15 +25,15 @@ const en = {
     view: "View",
     submit: "Submit",
     
-    // Property listings
-    properties: "Properties",
-    property: "Property",
+    // Heavy vehicle listings
+    properties: "Heavy Vehicles",
+    property: "Heavy Vehicle",
     price: "Price",
     location: "Location",
     description: "Description",
-    bedrooms: "Bedrooms",
-    bathrooms: "Bathrooms",
-    sqft: "Square Feet",
+    bedrooms: "Owners",
+    bathrooms: "Wheels",
+    sqft: "Year of Manufacture",
     type: "Type",
     forSale: "For Sale",
     forRent: "For Rent",
@@ -80,17 +80,17 @@ const en = {
     invalidCredentials: "Invalid credentials. Please try again.",
     
     // Home page specific
-    heroSubtitle: "Discover premium listings from trusted sellers in your area. Whether you're buying, selling, or just browsing, we've got you covered.",
+    heroSubtitle: "Discover premium heavy vehicles from trusted sellers in your area. Whether you're buying, selling, or just browsing, we've got you covered.",
     searchPlaceholder: "Search by title, location, or description...",
     featuredListings: "Featured Listings",
-    featuredSubtitle: "Discover our handpicked selection of premium properties",
-    propertiesFound: "properties found",
+    featuredSubtitle: "Discover our handpicked selection of premium heavy vehicles",
+    propertiesFound: "heavy vehicles found",
     grid: "Grid",
     list: "List",
     noListings: "No listings available at the moment.",
     
     // Search page specific
-    browseAllProperties: "Browse All Properties",
+    browseAllProperties: "Browse All Heavy Vehicles",
     allTypes: "All Types",
     priceRange: "Price Range",
     anyPrice: "Any Price",
@@ -106,7 +106,7 @@ const en = {
     filtersApplied: "{{count}} filter{{count, plural, one {} other {s}}} applied",
     clearFilters: "Clear Filters",
     applyFilters: "Apply Filters",
-    noPropertiesFound: "No properties found",
+    noPropertiesFound: "No heavy vehicles found",
     tryAdjustingSearch: "Try adjusting your search criteria or clearing filters",
     
     // Map types
@@ -153,15 +153,15 @@ const ta = {
     view: "காண்க",
     submit: "சமர்ப்பிக்கவும்",
     
-    // Property listings
-    properties: "சொத்துகள்",
-    property: "சொத்து",
+    // Heavy vehicle listings
+    properties: "கனரக வாகனங்கள்",
+    property: "கனரக வாகனம்",
     price: "விலை",
     location: "இடம்",
     description: "விளக்கம்",
-    bedrooms: "படுக்கையறைகள்",
-    bathrooms: "குளியலறைகள்",
-    sqft: "சதுர அடி",
+    bedrooms: "உரிமையாளர்கள்",
+    bathrooms: "சக்கரங்கள்",
+    sqft: "உற்பத்தி ஆண்டு",
     type: "வகை",
     forSale: "விற்பனைக்கு",
     forRent: "வாடகைக்கு",
@@ -208,17 +208,17 @@ const ta = {
     invalidCredentials: "தவறான அங்கீகாரங்கள். மீண்டும் முயற்சிக்கவும்.",
     
     // Home page specific
-    heroSubtitle: "உங்கள் பகுதியில் நம்பகமான விற்பனையாளர்களிடமிருந்து உயர்தர பட்டியல்களைக் கண்டறியவும். நீங்கள் வாங்குவதா, விற்கிறதா அல்லது உலாவுவதா என்பதைப் பொருட்படுத்தாமல், நாங்கள் உங்களைக் கவனித்துக் கொள்கிறோம்.",
+    heroSubtitle: "உங்கள் பகுதியில் நம்பகமான விற்பனையாளர்களிடமிருந்து உயர்தர கனரக வாகனங்களைக் கண்டறியவும். நீங்கள் வாங்குவதா, விற்கிறதா அல்லது உலாவுவதா என்பதைப் பொருட்படுத்தாமல், நாங்கள் உங்களைக் கவனித்துக் கொள்கிறோம்.",
     searchPlaceholder: "தலைப்பு, இடம் அல்லது விளக்கம் மூலம் தேடு...",
     featuredListings: "சிறப்பு பட்டியல்கள்",
-    featuredSubtitle: "எங்கள் தேர்ந்தெடுக்கப்பட்ட உயர்தர சொத்துகளின் தேர்வைக் கண்டறியவும்",
-    propertiesFound: "சொத்துகள் கிடைத்தன",
+    featuredSubtitle: "எங்கள் தேர்ந்தெடுக்கப்பட்ட உயர்தர கனரக வாகனங்களின் தேர்வைக் கண்டறியவும்",
+    propertiesFound: "கனரக வாகனங்கள் கிடைத்தன",
     grid: "கட்டம்",
     list: "பட்டியல்",
     noListings: "தற்போது பட்டியல்கள் இல்லை.",
     
     // Search page specific
-    browseAllProperties: "அனைத்து சொத்துகளையும் உலாவு",
+    browseAllProperties: "அனைத்து கனரக வாகனங்களையும் உலாவு",
     allTypes: "அனைத்து வகைகள்",
     priceRange: "விலை வரம்பு",
     anyPrice: "எந்த விலையும்",
@@ -234,7 +234,7 @@ const ta = {
     filtersApplied: "{{count}} வடிகட்டி{{count, plural, one {} other {கள்}}} பயன்படுத்தப்பட்டது",
     clearFilters: "வடிகட்டிகளை அழி",
     applyFilters: "வடிகட்டிகளை பயன்படுத்து",
-    noPropertiesFound: "சொத்துகள் எதுவும் கிடைக்கவில்லை",
+    noPropertiesFound: "கனரக வாகனங்கள் எதுவும் கிடைக்கவில்லை",
     tryAdjustingSearch: "உங்கள் தேடல் அளவுகோல்களை சரிசெய்யவும் அல்லது வடிகட்டிகளை அழிக்கவும்",
     
     // Map types

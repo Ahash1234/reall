@@ -109,7 +109,7 @@ export default function Dashboard() {
                 Admin Dashboard
               </h2>
               <p className="text-slate-600 mt-2" data-testid="dashboard-subtitle">
-                Manage your property listings
+                Manage your heavy vehicle listings
               </p>
             </div>
             <Button
@@ -232,7 +232,7 @@ export default function Dashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Property</TableHead>
+                        <TableHead>Heavy Vehicle</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead>Price</TableHead>
                         <TableHead>Location</TableHead>
@@ -245,7 +245,7 @@ export default function Dashboard() {
                           <TableCell>
                             <div className="flex items-center">
                               <img
-                                src={listing.images[0] || "/placeholder-image.jpg"}
+                                src={(listing.images && listing.images[0]) || "/placeholder-image.jpg"}
                                 alt={listing.title}
                                 className="h-12 w-12 rounded-lg object-cover mr-4"
                                 data-testid={`listing-table-image-${listing.id}`}
@@ -255,7 +255,7 @@ export default function Dashboard() {
                                   {listing.title}
                                 </div>
                                 <div className="text-sm text-slate-500" data-testid={`listing-table-details-${listing.id}`}>
-                                  {listing.bedrooms || 0} bed, {listing.bathrooms || 0} bath
+                                  {listing.owners || 0} owners, {listing.wheels || 0} wheels
                                 </div>
                               </div>
                             </div>

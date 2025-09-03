@@ -58,7 +58,7 @@ export default function Home() {
               {t('welcome')}
             </h2>
             <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto" data-testid="hero-subtitle">
-              {t('heroSubtitle', 'Discover premium listings from trusted sellers in your area. Whether you\'re buying, selling, or just browsing, we\'ve got you covered.')}
+              {t('heroSubtitle', 'Discover premium heavy vehicles from trusted sellers in your area. Whether you\'re buying, selling, or just browsing, we\'ve got you covered.')}
             </p>
             
             {/* Search Bar */}
